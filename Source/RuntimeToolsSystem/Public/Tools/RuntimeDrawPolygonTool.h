@@ -51,8 +51,6 @@ class RUNTIMETOOLSSYSTEM_API URuntimeDrawPolygonTool : public UDrawPolygonTool
 public:
 	virtual void Setup() override;
 
-	virtual void EmitCurrentPolygon() override;
-
 	UPROPERTY(BlueprintReadOnly)
 	URuntimeDrawPolygonToolProperties* RuntimeProperties;
 };

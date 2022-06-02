@@ -1,8 +1,10 @@
 #include "DynamicPMCActor.h"
+#include "Materials/Material.h"
 #include "MeshComponentRuntimeUtils.h"
-#include "DynamicMesh3.h"
+#include "DynamicMesh/DynamicMesh3.h"
 #include "Operations/MeshConvexHull.h"
 
+using namespace UE::Geometry;
 
 // Sets default values
 ADynamicPMCActor::ADynamicPMCActor()

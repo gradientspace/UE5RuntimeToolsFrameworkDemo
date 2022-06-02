@@ -3,7 +3,7 @@
 #include "CoreMinimal.h"
 #include "Engine/StaticMesh.h"
 #include "ProceduralMeshComponent.h"
-#include "DynamicMesh3.h"
+#include "DynamicMesh/DynamicMesh3.h"
 
 
 namespace RTGUtils
@@ -16,7 +16,7 @@ namespace RTGUtils
 	 */
 	RUNTIMEGEOMETRYUTILS_API void UpdateStaticMeshFromDynamicMesh(
 		UStaticMesh* StaticMesh,
-		const FDynamicMesh3* Mesh);
+		const UE::Geometry::FDynamicMesh3* Mesh);
 
 
 
@@ -28,7 +28,7 @@ namespace RTGUtils
 	 */
 	RUNTIMEGEOMETRYUTILS_API void UpdatePMCFromDynamicMesh_SplitTriangles(
 		UProceduralMeshComponent* Component, 
-		const FDynamicMesh3* Mesh,
+		const UE::Geometry::FDynamicMesh3* Mesh,
 		bool bUseFaceNormals,
 		bool bInitializeUV0,
 		bool bInitializePerVertexColors,

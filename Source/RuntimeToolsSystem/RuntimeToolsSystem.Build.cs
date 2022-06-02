@@ -17,11 +17,13 @@ public class RuntimeToolsSystem : ModuleRules
 			"InteractiveToolsFramework",
 			"MeshDescription",
 			"StaticMeshDescription",
-			"GeometricObjects",
+			"GeometryCore",
 			"DynamicMesh",
+			"GeometryFramework",
 			"MeshConversion",
 			"ModelingComponents",
 			"MeshModelingTools",
+			"MeshModelingToolsExp",
 			"RuntimeGeometryUtils"
 		});
 

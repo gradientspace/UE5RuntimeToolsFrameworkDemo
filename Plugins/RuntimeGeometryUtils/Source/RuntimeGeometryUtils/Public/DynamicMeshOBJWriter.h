@@ -1,7 +1,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "DynamicMesh3.h"
+#include "DynamicMesh/DynamicMesh3.h"
 
 namespace RTGUtils
 {
@@ -12,7 +12,7 @@ namespace RTGUtils
 	 */
 	RUNTIMEGEOMETRYUTILS_API bool WriteOBJMesh(
 		const FString& OutputPath,
-		const FDynamicMesh3& Mesh,
+		const UE::Geometry::FDynamicMesh3& Mesh,
 		bool bReverseOrientation);
 
 	/**
@@ -22,7 +22,7 @@ namespace RTGUtils
 	 */
 	RUNTIMEGEOMETRYUTILS_API bool WriteOBJMeshes(
 		const FString& OutputPath,
-		const TArray<FDynamicMesh3>& Meshes,
+		const TArray<UE::Geometry::FDynamicMesh3>& Meshes,
 		bool bReverseOrientation);
 }
 

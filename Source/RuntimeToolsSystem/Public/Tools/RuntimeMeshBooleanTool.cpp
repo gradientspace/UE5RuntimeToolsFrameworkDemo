@@ -3,19 +3,30 @@
 #include "MeshScene/RuntimeMeshSceneSubsystem.h"
 
 #include "ToolBuilderUtil.h"
-#include "MeshTransforms.h"
+#include "ModelingToolTargetUtil.h"
+#include "DynamicMesh/MeshTransforms.h"
 #include "DynamicMeshToMeshDescription.h"
 
 #define LOCTEXT_NAMESPACE "URuntimeMeshBooleanTool"
 
+using namespace UE::Geometry;
+
+UMultiSelectionMeshEditingTool* URuntimeMeshBooleanToolBuilder::CreateNewTool(const FToolBuilderState& SceneState) const
+{
+	return NewObject<URuntimeMeshBooleanTool>(SceneState.ToolManager);
+}
 
 void URuntimeMeshBooleanTool::Setup()
 {
 	UCSGMeshesTool::Setup();
 
-	this->CSGProperties->bAttemptFixHoles = true;
+	this->CSGProperties->bTryFixHoles = true;
 	// write to first input asset
-	this->HandleSourcesProperties->WriteOutputTo = EBaseCreateFromSelectedTargetType::FirstInputAsset;
+	this->HandleSourcesProperties->OutputWriteTo = EBaseCreateFromSelectedTargetType::FirstInputObject;
+	// set to keep sources because we will handle deleting SceneObjects ourselves. We cannot
+	// allow the Tool to do it because it will just call Actor.Destroy(), but we actually want
+	// to keep the Actor around for undo/redo
+	this->HandleSourcesProperties->HandleInputs = EHandleSourcesMethod::KeepSources;
 
 	// mirror properties we want to expose at runtime 
 	RuntimeProperties = NewObject<URuntimeMeshBooleanToolProperties>(this);
@@ -30,42 +41,23 @@ void URuntimeMeshBooleanTool::Setup()
 
 void URuntimeMeshBooleanTool::Shutdown(EToolShutdownType ShutdownType)
 {
-	FDynamicMeshOpResult Result = Preview->Shutdown();
-	for (auto& ComponentTarget : ComponentTargets)
-	{
-		ComponentTarget->SetOwnerVisibility(true);
-	}
-
 	if (ShutdownType == EToolShutdownType::Accept)
 	{
 		GetToolManager()->BeginUndoTransaction(GetActionName());
 
-		// Generate the result
-		AActor* KeepActor = nullptr;
-		TUniquePtr<FPrimitiveComponentTarget>& UpdateTarget = ComponentTargets[0];
-		KeepActor = UpdateTarget->GetOwnerActor();
-
-		FTransform3d TargetToWorld = (FTransform3d)UpdateTarget->GetWorldTransform();
-		FTransform3d WorldToTarget = TargetToWorld.Inverse();
-
-		FTransform3d ResultTransform = Result.Transform;
-		MeshTransforms::ApplyTransform(*Result.Mesh, ResultTransform);
-		MeshTransforms::ApplyTransform(*Result.Mesh, WorldToTarget);
-		UpdateTarget->CommitMesh([&](const FPrimitiveComponentTarget::FCommitParams& CommitParams)
-		{
-			FDynamicMeshToMeshDescription Converter;
-			Converter.Convert(Result.Mesh.Get(), *CommitParams.MeshDescription);
-		});
-
-		URuntimeMeshSceneObject* SO = URuntimeMeshSceneSubsystem::Get()->FindSceneObjectByActor(KeepActor);
-		URuntimeMeshSceneSubsystem::Get()->SetSelected(SO, true, false);
+		// base UCSGMeshesTool will delete the Actor but we need to also delete the SO...
+		AActor* KeepActor = UE::ToolTarget::GetTargetActor(Targets[0]);
+		URuntimeMeshSceneObject* KeepSO = URuntimeMeshSceneSubsystem::Get()->FindSceneObjectByActor(KeepActor);
+		URuntimeMeshSceneSubsystem::Get()->SetSelected(KeepSO, true, false);
 		URuntimeMeshSceneSubsystem::Get()->DeleteSelectedSceneObjects(KeepActor);
-
-		GetToolManager()->EndUndoTransaction();
 	}
 
-	UInteractiveGizmoManager* GizmoManager = GetToolManager()->GetPairedGizmoManager();
-	GizmoManager->DestroyAllGizmosByOwner(this);
+	UCSGMeshesTool::Shutdown(ShutdownType);
+
+	if (ShutdownType == EToolShutdownType::Accept)
+	{
+		GetToolManager()->EndUndoTransaction();
+	}
 }
 
 

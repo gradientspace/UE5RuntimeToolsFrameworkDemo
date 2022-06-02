@@ -9,7 +9,7 @@ class RUNTIMETOOLSSYSTEM_API URuntimeRemeshMeshToolBuilder : public URemeshMeshT
 {
 	GENERATED_BODY()
 public:
-	virtual UInteractiveTool* BuildTool(const FToolBuilderState& SceneState) const override;
+	virtual UMultiSelectionMeshEditingTool* CreateNewTool(const FToolBuilderState& SceneState) const override;
 };
 
 

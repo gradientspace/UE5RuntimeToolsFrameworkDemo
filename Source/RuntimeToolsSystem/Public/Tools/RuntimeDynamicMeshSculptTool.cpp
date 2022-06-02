@@ -47,10 +47,10 @@ void URuntimeDynamicMeshSculptTool::Setup()
 	// mirror properties we want to expose at runtime 
 	RuntimeProperties = NewObject<URuntimeDynamicMeshSculptToolProperties>(this);
 
-	RuntimeProperties->BrushSize = BrushProperties->BrushSize;
+	RuntimeProperties->BrushSize = BrushProperties->BrushSize.AdaptiveSize;
 	RuntimeProperties->WatchProperty(RuntimeProperties->BrushSize,
 		[this](float NewValue) { 
-		BrushProperties->BrushSize = NewValue; 
+		BrushProperties->BrushSize.AdaptiveSize = NewValue;
 		OnPropertyModified(nullptr,nullptr);	// hack to get CalculateBrushRadius() to be called, because it is private (why?)
 	});
 

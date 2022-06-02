@@ -1,14 +1,17 @@
 #include "DynamicSDMCActor.h"
 #include "MeshComponentRuntimeUtils.h"
-#include "DynamicMesh3.h"
+#include "DynamicMesh/DynamicMesh3.h"
 #include "Operations/MeshConvexHull.h"
+#include "ShapeApproximation/SimpleShapeSet3.h"
+#include "Physics/ComponentCollisionUtil.h"
 #include "Materials/Material.h"
 
+using namespace UE::Geometry;
 
 // Sets default values
 ADynamicSDMCActor::ADynamicSDMCActor()
 {
-	MeshComponent = CreateDefaultSubobject<URuntimeDynamicMeshComponent>(TEXT("MeshComponent"), false);
+	MeshComponent = CreateDefaultSubobject<UDynamicMeshComponent>(TEXT("MeshComponent"), false);
 	SetRootComponent(MeshComponent);
 }
 
@@ -43,7 +46,7 @@ void ADynamicSDMCActor::UpdateSDMCMesh()
 			|| this->CollisionMode == EDynamicMeshActorCollisionMode::ComplexAsSimpleAsync)
 		{
 			//MeshComponent->bUseAsyncCooking = (this->CollisionMode == EDynamicMeshActorCollisionMode::ComplexAsSimpleAsync);
-			MeshComponent->bUseComplexAsSimpleCollision = true;
+			MeshComponent->SetComplexAsSimpleCollisionEnabled(true);
 		}
 		else if (this->CollisionMode == EDynamicMeshActorCollisionMode::SimpleConvexHull)
 		{
@@ -61,8 +64,8 @@ void ADynamicSDMCActor::UpdateSDMCMesh()
 				FConvexShape3d& Convex = ShapeSet.Convexes.Emplace_GetRef();
 				Convex.Mesh = MoveTemp(HullCompute.ConvexHull);
 
-				MeshComponent->bUseComplexAsSimpleCollision = false;
-				MeshComponent->SetSimpleCollisionGeometry(MoveTemp(ShapeSet));
+				MeshComponent->SetComplexAsSimpleCollisionEnabled(false);
+				UE::Geometry::SetSimpleCollision(MeshComponent, &ShapeSet);
 			}
 		}
 

@@ -2,7 +2,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
-#include "RuntimeDynamicMeshComponent.h"
+#include "Components/DynamicMeshComponent.h"
 #include "DynamicMeshBaseActor.h"
 #include "DynamicSDMCActor.generated.h"
 
@@ -19,7 +19,7 @@ public:
 
 public:
 	UPROPERTY(VisibleAnywhere)
-	URuntimeDynamicMeshComponent* MeshComponent = nullptr;
+	UDynamicMeshComponent* MeshComponent = nullptr;
 
 protected:
 	// Called when the game starts or when spawned

@@ -58,27 +58,22 @@ void AToolsFrameworkDemoGameModeBase::RegisterTools()
 	UInteractiveToolManager* ToolManager = ToolsSystem->ToolsContext->ToolManager;
 
 	auto AddPrimitiveToolBuilder = NewObject<UAddPrimitiveToolBuilder>();
-	AddPrimitiveToolBuilder->AssetAPI = ToolsSystem->GetAssetAPI();
 	AddPrimitiveToolBuilder->ShapeType = UAddPrimitiveToolBuilder::EMakeMeshShapeType::Box;
 	ToolManager->RegisterToolType("AddPrimitiveBox", AddPrimitiveToolBuilder);
 
 	auto DrawPolygonToolBuilder = NewObject<URuntimeDrawPolygonToolBuilder>();
-	DrawPolygonToolBuilder->AssetAPI = ToolsSystem->GetAssetAPI();
 	ToolManager->RegisterToolType("DrawPolygon", DrawPolygonToolBuilder);
 
 	auto PolyRevolveToolBuilder = NewObject<UDrawAndRevolveToolBuilder>();
-	PolyRevolveToolBuilder->AssetAPI = ToolsSystem->GetAssetAPI();
 	ToolManager->RegisterToolType("PolyRevolve", PolyRevolveToolBuilder);
 
 	auto PolyEditToolBuilder = NewObject<URuntimePolyEditToolBuilder>();
 	ToolManager->RegisterToolType("EditPolygons", PolyEditToolBuilder);
 
 	auto MeshPlaneCutToolBuilder = NewObject<UPlaneCutToolBuilder>();
-	MeshPlaneCutToolBuilder->AssetAPI = ToolsSystem->GetAssetAPI();
 	ToolManager->RegisterToolType("PlaneCut", MeshPlaneCutToolBuilder);
 
 	auto RemeshMeshToolBuilder = NewObject<URuntimeRemeshMeshToolBuilder>();
-	RemeshMeshToolBuilder->AssetAPI = ToolsSystem->GetAssetAPI();
 	ToolManager->RegisterToolType("RemeshMesh", RemeshMeshToolBuilder);
 
 	auto VertexSculptToolBuilder = NewObject<UMeshVertexSculptToolBuilder>();
@@ -89,7 +84,6 @@ void AToolsFrameworkDemoGameModeBase::RegisterTools()
 	ToolManager->RegisterToolType("DynaSculpt", DynaSculptToolBuilder);
 
 	auto MeshBooleanToolBuilder = NewObject<URuntimeMeshBooleanToolBuilder>();
-	MeshBooleanToolBuilder->AssetAPI = ToolsSystem->GetAssetAPI();
 	ToolManager->RegisterToolType("MeshBoolean", MeshBooleanToolBuilder);
 }
 

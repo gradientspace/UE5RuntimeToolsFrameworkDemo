@@ -6,8 +6,8 @@
 #include "Engine/StaticMeshActor.h"
 #include "Components/PrimitiveComponent.h"
 #include "Templates/PimplPtr.h"
-#include "DynamicMesh3.h"
-#include "DynamicMeshAABBTree3.h"
+#include "DynamicMesh/DynamicMesh3.h"
+#include "DynamicMesh/DynamicMeshAABBTree3.h"
 #include "DynamicPMCActor.h"
 #include "DynamicSDMCActor.h"
 #include "RuntimeMeshSceneObject.generated.h"
@@ -28,6 +28,9 @@ struct FMeshDescription;
 UCLASS()
 class RUNTIMETOOLSSYSTEM_API URuntimeMeshSceneObject : public UObject
 {
+	using FDynamicMesh3 = UE::Geometry::FDynamicMesh3;
+	using FDynamicMeshAABBTree3 = UE::Geometry::FDynamicMeshAABBTree3;
+
 	GENERATED_BODY()
 
 public:

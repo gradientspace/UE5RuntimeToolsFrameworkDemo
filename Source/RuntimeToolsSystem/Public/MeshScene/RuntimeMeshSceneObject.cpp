@@ -1,13 +1,14 @@
 
 #include "RuntimeMeshSceneObject.h"
 
-#include "DynamicMesh3.h"
-#include "DynamicMeshAABBTree3.h"
+#include "DynamicMesh/DynamicMesh3.h"
+#include "DynamicMesh/DynamicMeshAABBTree3.h"
 #include "MeshDescriptionToDynamicMesh.h"
 #include "DynamicMeshToMeshDescription.h"
 
 #include "Materials/Material.h"
 
+using namespace UE::Geometry;
 
 URuntimeMeshSceneObject::URuntimeMeshSceneObject()
 {
@@ -186,8 +187,9 @@ void URuntimeMeshSceneObject::UpdateSourceMesh(const FMeshDescription* MeshDescr
 bool URuntimeMeshSceneObject::IntersectRay(FVector RayOrigin, FVector RayDirection, FVector& WorldHitPoint, float& HitDistance, int& NearestTriangle, FVector& TriBaryCoords, float MaxDistance)
 {
 	if (!ensure(SourceMesh)) return false;
+	if (!GetActor()) return false;		// this can happen if the Actor gets deleted but the SO does not. Bad situation but avoids crash...
 
-	FTransform3d ActorToWorld(GetActor()->GetActorTransform());
+	FTransformSRT3d ActorToWorld(GetActor()->GetActorTransform());
 	FVector3d WorldDirection(RayDirection); WorldDirection.Normalize();
 	FRay3d LocalRay(ActorToWorld.InverseTransformPosition((FVector3d)RayOrigin),
 		ActorToWorld.InverseTransformNormal(WorldDirection));

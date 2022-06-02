@@ -1,8 +1,8 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "DynamicMesh3.h"
-#include "DynamicMeshAABBTree3.h"
+#include "DynamicMesh/DynamicMesh3.h"
+#include "DynamicMesh/DynamicMeshAABBTree3.h"
 #include "Spatial/FastWinding.h"
 #include "GeneratedMesh.generated.h"
 
@@ -27,6 +27,9 @@ enum class EGeneratedMeshBooleanOperation : uint8
 UCLASS(BlueprintType, Transient)
 class RUNTIMEGEOMETRYUTILS_API UGeneratedMesh : public UObject
 {
+	using FDynamicMesh3 = UE::Geometry::FDynamicMesh3;
+	using FDynamicMeshAABBTree3 = UE::Geometry::FDynamicMeshAABBTree3;
+
 	GENERATED_BODY()
 
 public:
@@ -282,12 +285,12 @@ protected:
 	TUniquePtr<FDynamicMesh3> Mesh;
 
 	TUniquePtr<FDynamicMeshAABBTree3> MeshAABBTree;
-	TUniquePtr<TFastWindingTree<FDynamicMesh3>> FastWinding;
+	TUniquePtr<UE::Geometry::TFastWindingTree<FDynamicMesh3>> FastWinding;
 
 public:
 	const TUniquePtr<FDynamicMesh3>& GetMesh() const { return Mesh; }
 	TUniquePtr<FDynamicMeshAABBTree3>& GetAABBTree();		// note: cannot return const because query functions are non-const
-	const TUniquePtr<TFastWindingTree<FDynamicMesh3>>& GetFastWindingTree();
+	const TUniquePtr<UE::Geometry::TFastWindingTree<FDynamicMesh3>>& GetFastWindingTree();
 
 	void SetMesh(const FDynamicMesh3& MeshIn) { *Mesh = MeshIn; OnMeshUpdated(); }
 	void AppendMeshWithAppendTransform(FDynamicMesh3&& ToAppend, bool bPostMeshUpdate = true);

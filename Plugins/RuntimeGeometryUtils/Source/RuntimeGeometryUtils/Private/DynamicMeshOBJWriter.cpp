@@ -1,10 +1,10 @@
 #include "DynamicMeshOBJWriter.h"
-#include "DynamicMeshAttributeSet.h"
+#include "DynamicMesh/DynamicMeshAttributeSet.h"
 #include "DynamicMeshEditor.h"
 
 #include <fstream>
 
-
+using namespace UE::Geometry;
 
 class FDynamicMeshOBJWriter
 {

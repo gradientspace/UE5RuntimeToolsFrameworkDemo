@@ -8,7 +8,7 @@ class RUNTIMETOOLSSYSTEM_API URuntimePolyEditToolBuilder : public UEditMeshPolyg
 {
 	GENERATED_BODY()
 public:
-	virtual UMeshSurfacePointTool* CreateNewTool(const FToolBuilderState& SceneState) const override;
+	virtual USingleSelectionMeshEditingTool* CreateNewTool(const FToolBuilderState& SceneState) const override;
 };
 
 
@@ -47,4 +47,10 @@ public:
 	void BeginCutFacesAction();
 
 
+	// Multiple base classes have a UWorld* TargetWorld, causes scoping problems...so we add a third that we can rely on...
+	UPROPERTY()
+	TObjectPtr<UWorld> LocalTargetWorld = nullptr; 
+
+	// Override this to work around a bug in PolyEditActivityUtil::CreatePolyEditPreviewMesh() that calls GetWorld instead of GetTargetWorld()
+	virtual UWorld* GetWorld() const;
 };

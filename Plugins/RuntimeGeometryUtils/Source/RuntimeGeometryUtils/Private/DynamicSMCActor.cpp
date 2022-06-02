@@ -1,5 +1,8 @@
 #include "DynamicSMCActor.h"
+#include "Materials/Material.h"
 #include "MeshComponentRuntimeUtils.h"
+
+using namespace UE::Geometry;
 
 // Sets default values
 ADynamicSMCActor::ADynamicSMCActor()
@@ -48,7 +51,9 @@ void ADynamicSMCActor::UpdateSMCMesh()
 		StaticMesh = NewObject<UStaticMesh>();
 		MeshComponent->SetStaticMesh(StaticMesh);
 		// add one material slot
-		StaticMesh->StaticMaterials.Add(FStaticMaterial());
+		TArray<FStaticMaterial> Materials = StaticMesh->GetStaticMaterials();
+		Materials.Add(FStaticMaterial());
+		StaticMesh->SetStaticMaterials(Materials);
 	}
 
 	if (MeshComponent)

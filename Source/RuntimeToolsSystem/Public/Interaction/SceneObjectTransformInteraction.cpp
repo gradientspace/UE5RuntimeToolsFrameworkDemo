@@ -4,8 +4,9 @@
 #include "MeshScene/RuntimeMeshSceneSubsystem.h"
 #include "RuntimeToolsFramework/RuntimeToolsFrameworkSubsystem.h"
 
-#include "BaseGizmos/TransformGizmo.h"
+#include "BaseGizmos/CombinedTransformGizmo.h"
 #include "BaseGizmos/TransformProxy.h"
+#include "BaseGizmos/TransformGizmoUtil.h"
 
 void USceneObjectTransformInteraction::Initialize(TUniqueFunction<bool()> GizmoEnabledCallbackIn)
 {
@@ -96,7 +97,7 @@ void USceneObjectTransformInteraction::UpdateGizmoTargets(const TArray<URuntimeM
 		GizmoElements = ETransformGizmoSubElements::TranslateRotateUniformScale;
 	}
 
-	TransformGizmo = GizmoManager->CreateCustomTransformGizmo(GizmoElements, this);
+	TransformGizmo = UE::TransformGizmoUtil::CreateCustomTransformGizmo(GizmoManager, GizmoElements, this);
 	TransformGizmo->SetActiveTarget(TransformProxy);
 
 	// optionally ignore coordinate system setting

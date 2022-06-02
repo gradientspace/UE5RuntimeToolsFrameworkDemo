@@ -48,8 +48,5 @@ class RUNTIMETOOLSSYSTEM_API URuntimeMeshBooleanToolBuilder : public UCSGMeshesT
 {
 	GENERATED_BODY()
 public:
-	virtual UBaseCreateFromSelectedTool* MakeNewToolInstance(UObject* Outer) const override
-	{
-		return NewObject<URuntimeMeshBooleanTool>(Outer);
-	}
+	virtual UMultiSelectionMeshEditingTool* CreateNewTool(const FToolBuilderState& SceneState) const override;
 };

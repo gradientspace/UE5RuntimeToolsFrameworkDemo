@@ -99,10 +99,16 @@ public:
 	virtual void DrawSprite(
 		const FVector& Position, float SizeX, float SizeY,
 		const FTexture* Sprite, const FLinearColor& Color, uint8 DepthPriorityGroup,
-		float U, float UL, float V, float VL, uint8 BlendMode = 1 /*SE_BLEND_Masked*/ ) { ensure(false); }
+		float U, float UL, float V, float VL, uint8 BlendMode = 1 /*SE_BLEND_Masked*/, float OpacityMaskRefVal = 0.5f) { ensure(false); }
 
 	virtual void DrawLine( const FVector& Start, const FVector& End, const FLinearColor& Color,
 		uint8 DepthPriorityGroup, float Thickness = 0.0f, float DepthBias = 0.0f, bool bScreenSpace = false	)
+	{
+		RenderComponent->DrawLine(Start, End, Color, DepthPriorityGroup, Thickness, DepthBias, bScreenSpace);
+	}
+
+	virtual void DrawTranslucentLine(const FVector& Start, const FVector& End, const FLinearColor& Color,
+		uint8 DepthPriorityGroup, float Thickness = 0.0f, float DepthBias = 0.0f, bool bScreenSpace = false	) override
 	{
 		RenderComponent->DrawLine(Start, End, Color, DepthPriorityGroup, Thickness, DepthBias, bScreenSpace);
 	}

@@ -1,7 +1,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "DynamicMesh3.h"
+#include "DynamicMesh/DynamicMesh3.h"
 
 namespace RTGUtils
 {
@@ -15,7 +15,7 @@ namespace RTGUtils
 	 */
 	RUNTIMEGEOMETRYUTILS_API bool ReadOBJMesh(
 		const FString& Path,
-		FDynamicMesh3& MeshOut,
+		UE::Geometry::FDynamicMesh3& MeshOut,
 		bool bNormals,
 		bool bTexCoords,
 		bool bVertexColors,

@@ -3,9 +3,9 @@
 #include "MeshScene/RuntimeMeshSceneSubsystem.h"
 #include "InputCoreTypes.h"
 #include "GameFramework/PlayerInput.h"
+#include "GameFramework/Controller.h"
+#include "GameFramework/PlayerController.h"
 #include "Components/InputComponent.h"
-
-#include "BaseGizmos/GizmoRenderingUtil.h"
 
 // Sets default values
 AToolsContextActor::AToolsContextActor()
@@ -22,18 +22,10 @@ void AToolsContextActor::BeginPlay()
 	UGameInstance* GameInstance = GetGameInstance();
 	ToolsSystem = UGameInstance::GetSubsystem<URuntimeToolsFrameworkSubsystem>(GameInstance);
 	ToolsSystem->SetContextActor(this);
-
-#if WITH_EDITOR
-	// disable gizmo focus tracking
-	GizmoRenderingUtil::SetGlobalFocusedSceneViewTrackingEnabled(false);
-#endif
 }
 
 void AToolsContextActor::EndPlay(const EEndPlayReason::Type EndPlayReason)
 {
-#if WITH_EDITOR
-	GizmoRenderingUtil::SetGlobalFocusedSceneViewTrackingEnabled(true);
-#endif
 }
 
 

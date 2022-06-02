@@ -19,6 +19,7 @@ class FRuntimeToolsContextTransactionImpl;
 class FRuntimeToolsContextAssetImpl;
 class AToolsContextActor;
 
+
 /**
  * 
  */
@@ -60,7 +61,6 @@ public:
 	//
 
 	IToolsContextTransactionsAPI* GetTransactionsAPI();
-	IToolsContextAssetAPI* GetAssetAPI();
 
 	UFUNCTION(BlueprintCallable)
 	USceneHistoryManager* GetSceneHistory() { return SceneHistory;  }
@@ -170,7 +170,6 @@ public:
 protected:
 	TSharedPtr<FRuntimeToolsContextQueriesImpl> ContextQueriesAPI;
 	TSharedPtr<FRuntimeToolsContextTransactionImpl> ContextTransactionsAPI;
-	TSharedPtr<FRuntimeToolsContextAssetImpl> ContextAssetAPI;
 
 	void InternalConsistencyChecks();
 	bool bIsShuttingDown = false;

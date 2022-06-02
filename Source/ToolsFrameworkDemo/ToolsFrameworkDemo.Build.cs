@@ -17,11 +17,12 @@ public class ToolsFrameworkDemo : ModuleRules
 			"InteractiveToolsFramework",
 			"MeshDescription",
 			"StaticMeshDescription",
-			"GeometricObjects",
+			"GeometryCore",
 			"DynamicMesh",
 			"MeshConversion",
 			"ModelingComponents",
 			"MeshModelingTools",
+			"MeshModelingToolsExp",
 			"RuntimeGeometryUtils",
 			"RuntimeToolsSystem"
 		});

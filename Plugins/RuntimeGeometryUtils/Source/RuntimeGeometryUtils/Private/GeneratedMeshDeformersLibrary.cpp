@@ -1,10 +1,11 @@
 
 #include "GeneratedMeshDeformersLibrary.h"
-#include "DynamicMesh3.h"
+#include "DynamicMesh/DynamicMesh3.h"
+#include "DynamicMesh/MeshNormals.h"
 #include "FrameTypes.h"
-#include "MeshNormals.h"
 #include "Async/ParallelFor.h"
 
+using namespace UE::Geometry;
 
 UGeneratedMesh* UGeneratedMeshDeformersLibrary::DeformMeshAxisSinWave1D(UGeneratedMesh* MeshObj, float Magnitude, float Frequency, float FrequencyShift, FVector AxisIn, FVector UpIn)
 {
@@ -122,7 +123,7 @@ UGeneratedMesh* UGeneratedMeshDeformersLibrary::SmoothMeshUniform(UGeneratedMesh
 					{
 						FVector3d Centroid;
 						Mesh.GetVtxOneRingCentroid(vid, Centroid);
-						SmoothPositions[vid] = FVector3d::Lerp(Mesh.GetVertex(vid), Centroid, Alpha);
+						SmoothPositions[vid] = UE::Geometry::Lerp(Mesh.GetVertex(vid), Centroid, (double)Alpha);
 					}
 				});
 				for (int32 vid = 0; vid < NumV; ++vid)

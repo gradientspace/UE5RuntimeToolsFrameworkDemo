@@ -14,15 +14,17 @@
 #include "Engine/LocalPlayer.h"
 #include "GameFramework/PlayerController.h"
 
-#include "DynamicMeshComponentTarget.h"
+#include "ContextObjectStore.h"
+#include "ToolTargetManager.h"
+#include "RuntimeDynamicMeshComponentToolTarget.h"
 
 #include "Materials/Material.h"
 
 #include "BaseGizmos/GizmoRenderingUtil.h"
+#include "BaseGizmos/TransformGizmoUtil.h"
+#include "BaseGizmos/GizmoViewContext.h"
 
-
-
-
+#include "RuntimeModelingObjectsCreationAPI.h"
 
 
 
@@ -41,10 +43,20 @@ public:
 		ContextActor = ContextActorIn;
 	}
 
+	void UpdateActiveViewport(FViewport* Viewport)
+	{
+		ActiveViewport = Viewport;
+	}
+
+	virtual UWorld* GetCurrentEditingWorld() const override
+	{
+		return TargetWorld;
+	}
 
 	virtual void GetCurrentSelectionState(FToolBuilderState& StateOut) const override
 	{
 		StateOut.ToolManager = ToolsContext->ToolManager;
+		StateOut.TargetManager = ToolsContext->TargetManager;
 		StateOut.GizmoManager = ToolsContext->GizmoManager;
 		StateOut.World = TargetWorld;
 
@@ -83,9 +95,9 @@ public:
 		return URuntimeToolsFrameworkSubsystem::Get()->GetCurrentCoordinateSystem();
 	}
 
-	virtual bool ExecuteSceneSnapQuery(const FSceneSnapQueryRequest& Request, TArray<FSceneSnapQueryResult>& Results) const override
+	virtual FToolContextSnappingConfiguration GetCurrentSnappingSettings() const override
 	{
-		return false;
+		return FToolContextSnappingConfiguration();
 	}
 
 	virtual UMaterialInterface* GetStandardMaterial(EStandardToolContextMaterials MaterialType) const override
@@ -93,17 +105,21 @@ public:
 		return UMaterial::GetDefaultMaterial(MD_Surface);
 	}
 
-#if WITH_EDITOR
-	virtual HHitProxy* GetHitProxy(int32 X, int32 Y) const override
+	virtual FViewport* GetHoveredViewport() const override
 	{
-		return nullptr;
+		return ActiveViewport;
 	}
-#endif
+
+	virtual FViewport* GetFocusedViewport() const override
+	{
+		return ActiveViewport;
+	}
 
 protected:
 	UInteractiveToolsContext* ToolsContext;
 	UWorld* TargetWorld;
 	AToolsContextActor* ContextActor = nullptr;
+	FViewport* ActiveViewport = nullptr;
 };
 
 
@@ -163,73 +179,6 @@ public:
 
 
 
-
-
-
-class FRuntimeToolsContextAssetImpl : public IToolsContextAssetAPI
-{
-public:
-	virtual FString GetWorldRelativeAssetRootPath(const UWorld* World) override
-	{
-		return FString("");
-	}
-
-	virtual FString GetActiveAssetFolderPath() override
-	{
-		return FString("");
-	}
-
-	virtual FString InteractiveSelectAssetPath(const FString& DefaultAssetName, const FText& DialogTitleMessage) override
-	{
-		return FString("");
-	}
-
-	virtual UPackage* MakeNewAssetPackage(const FString& FolderPath, const FString& AssetBaseName, FString& UniqueAssetNameOut) override
-	{
-		return NewObject<UPackage>();
-	}
-
-	virtual void InteractiveSaveGeneratedAsset(UObject* Asset, UPackage* AssetPackage) override
-	{
-		ensure(false);
-	}
-
-	virtual void AutoSaveGeneratedAsset(UObject* Asset, UPackage* AssetPackage) override
-	{
-		ensure(false);
-	}
-
-	virtual void NotifyGeneratedAssetModified(UObject* Asset, UPackage* AssetPackage) override
-	{
-		ensure(false);
-	}
-
-	virtual AActor* GenerateStaticMeshActor(
-		UWorld* TargetWorld,
-		FTransform Transform,
-		FString ObjectBaseName,
-		FGeneratedStaticMeshAssetConfig&& AssetConfig) override
-	{
-
-		URuntimeMeshSceneObject* SceneObject = URuntimeMeshSceneSubsystem::Get()->CreateNewSceneObject();
-		SceneObject->Initialize(TargetWorld, AssetConfig.MeshDescription.Get());
-		SceneObject->SetTransform(Transform);
-		return SceneObject->GetActor();
-	}
-
-	virtual bool SaveGeneratedTexture2D(
-		UTexture2D* GeneratedTexture,
-		FString ObjectBaseName,
-		const UObject* RelativeToAsset) override
-	{
-		ensure(false);
-		return false;
-	}
-
-};
-
-
-
 URuntimeToolsFrameworkSubsystem* URuntimeToolsFrameworkSubsystem::InstanceSingleton = nullptr;
 
 void URuntimeToolsFrameworkSubsystem::InitializeSingleton(URuntimeToolsFrameworkSubsystem* Subsystem)
@@ -267,8 +216,6 @@ void URuntimeToolsFrameworkSubsystem::InitializeToolsContext(UWorld* TargetWorld
 	}
 
 	ContextTransactionsAPI = MakeShared<FRuntimeToolsContextTransactionImpl>();
-
-	ContextAssetAPI = MakeShared<FRuntimeToolsContextAssetImpl>();
 
 	ToolsContext->Initialize(ContextQueriesAPI.Get(), ContextTransactionsAPI.Get());
 
@@ -309,8 +256,19 @@ void URuntimeToolsFrameworkSubsystem::InitializeToolsContext(UWorld* TargetWorld
 	// have to disable this for current tools framework handling of property defaults.
 	GShouldVerifyGCAssumptions = false;
 
-	// make sure we have registered FPrimitiveComponentTarget factories
-	FSimpleDynamicMeshComponentTargetFactory::RegisterFactory();
+	//// make sure we have registered FPrimitiveComponentTarget factories
+	//FSimpleDynamicMeshComponentTargetFactory::RegisterFactory();
+
+	// register target factory for dynamic mesh components
+	//ToolsContext->TargetManager->AddTargetFactory(NewObject<URuntimeDynamicMeshComponentToolTargetFactory>(ToolsContext->ToolManager));
+	ToolsContext->TargetManager->AddTargetFactory( NewObject<URuntimeDynamicMeshComponentToolTargetFactory>(this) );
+
+	// register transform gizmo util helper
+	UE::TransformGizmoUtil::RegisterTransformGizmoContextObject(ToolsContext);
+
+	// register object creation API
+	URuntimeModelingObjectsCreationAPI* ModelCreationAPI = URuntimeModelingObjectsCreationAPI::Register(ToolsContext);
+
 }
 
 
@@ -324,13 +282,19 @@ void URuntimeToolsFrameworkSubsystem::ShutdownToolsContext()
 
 		TransformInteraction->Shutdown();
 
+		// unregister transform gizmo helper
+		UE::TransformGizmoUtil::DeregisterTransformGizmoContextObject(ToolsContext);
+
+		// unregister objection creation helper
+		URuntimeModelingObjectsCreationAPI::Deregister(ToolsContext);
+
 		ToolsContext->Shutdown();
 	}
 
+	// get rid of the PDI rendering helper Actor
 	if (PDIRenderActor)
 	{
 		PDIRenderActor->Destroy();
-
 		PDIRenderActor = nullptr;
 		PDIRenderComponent = nullptr;
 	}
@@ -425,7 +389,8 @@ void URuntimeToolsFrameworkSubsystem::Tick(float DeltaTime)
 {
 	if (ensure(ContextActor) == false) return;
 
-	GizmoRenderingUtil::SetGlobalFocusedEditorSceneView(nullptr);
+	// no longer exists...
+	//GizmoRenderingUtil::SetGlobalFocusedEditorSceneView(nullptr);
 
 	FInputDeviceState InputState = CurrentMouseState;
 	InputState.InputDevice = EInputDevices::Mouse;
@@ -443,7 +408,6 @@ void URuntimeToolsFrameworkSubsystem::Tick(float DeltaTime)
 	}
 	// why do we need this scale here? what is it for?
 	FVector2D ViewportMousePos = ViewportGeometry.Scale * ViewportGeometry.AbsoluteToLocal(MousePosition);
-
 
 	// update modifier keys
 	InputState.SetModifierKeyStates(
@@ -471,6 +435,14 @@ void URuntimeToolsFrameworkSubsystem::Tick(float DeltaTime)
 		{ 
 			return;		// abort abort
 		}
+
+		UGizmoViewContext* GizmoViewContext = ToolsContext->ContextObjectStore->FindContext<UGizmoViewContext>();
+		if (GizmoViewContext)
+		{
+			GizmoViewContext->ResetFromSceneView(*SceneView);
+		}
+
+		ContextQueriesAPI->UpdateActiveViewport(Viewport);
 
 		CurrentViewCameraState.Position = ViewLocation;
 		CurrentViewCameraState.Orientation = ViewRotation.Quaternion();
@@ -581,12 +553,6 @@ IToolsContextTransactionsAPI* URuntimeToolsFrameworkSubsystem::GetTransactionsAP
 
 
 
-
-
-IToolsContextAssetAPI* URuntimeToolsFrameworkSubsystem::GetAssetAPI()
-{
-	return ContextAssetAPI.Get();
-}
 
 
 

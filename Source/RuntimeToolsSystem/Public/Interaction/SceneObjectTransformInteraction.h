@@ -3,7 +3,7 @@
 #include "SceneObjectTransformInteraction.generated.h"
 
 class UTransformProxy;
-class UTransformGizmo;
+class UCombinedTransformGizmo;
 class URuntimeMeshSceneObject;
 
 /**
@@ -49,7 +49,7 @@ protected:
 	UTransformProxy* TransformProxy;
 
 	UPROPERTY()
-	UTransformGizmo* TransformGizmo;
+	UCombinedTransformGizmo* TransformGizmo;
 
 	void UpdateGizmoTargets(const TArray<URuntimeMeshSceneObject*>& Selection);
 

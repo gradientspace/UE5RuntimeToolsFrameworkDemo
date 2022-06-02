@@ -6,9 +6,10 @@
 #define LOCTEXT_NAMESPACE "URuntimeEditMeshPolygonsTool"
 
 
-UMeshSurfacePointTool* URuntimePolyEditToolBuilder::CreateNewTool(const FToolBuilderState& SceneState) const
+USingleSelectionMeshEditingTool* URuntimePolyEditToolBuilder::CreateNewTool(const FToolBuilderState& SceneState) const
 {
 	URuntimePolyEditTool* PolyEditTool = NewObject<URuntimePolyEditTool>(SceneState.ToolManager);
+	PolyEditTool->LocalTargetWorld = SceneState.World;
 	return PolyEditTool;
 }
 
@@ -23,10 +24,6 @@ void URuntimePolyEditTool::Setup()
 	RuntimeProperties = NewObject<URuntimePolyEditToolProperties>(this);
 
 	AddToolPropertySource(RuntimeProperties);
-
-
-	// hack to workaround garbage collection bug in 4.26.0
-	DynamicMeshComponent->GetSecondaryRenderMaterial()->AddToRoot();
 
 	check(GEngine->WireframeMaterial != nullptr);
 }
@@ -51,6 +48,11 @@ void URuntimePolyEditTool::BeginOutsetAction()
 void URuntimePolyEditTool::BeginCutFacesAction()
 {
 	RequestAction(EEditMeshPolygonsToolActions::CutFaces);
+}
+
+UWorld* URuntimePolyEditTool::GetWorld() const
+{ 
+	return this->LocalTargetWorld;
 }
 
 
