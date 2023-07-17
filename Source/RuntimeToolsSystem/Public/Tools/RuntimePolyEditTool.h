@@ -8,7 +8,7 @@ class RUNTIMETOOLSSYSTEM_API URuntimePolyEditToolBuilder : public UEditMeshPolyg
 {
 	GENERATED_BODY()
 public:
-	virtual USingleSelectionMeshEditingTool* CreateNewTool(const FToolBuilderState& SceneState) const override;
+	virtual USingleTargetWithSelectionTool* CreateNewTool(const FToolBuilderState& SceneState) const override;
 };
 
 
