@@ -383,8 +383,7 @@ public:
 
 
 
-
-PRAGMA_DISABLE_OPTIMIZATION
+UE_DISABLE_OPTIMIZATION
 void URuntimeToolsFrameworkSubsystem::Tick(float DeltaTime)
 {
 	if (ensure(ContextActor) == false) return;
@@ -527,7 +526,7 @@ void URuntimeToolsFrameworkSubsystem::Tick(float DeltaTime)
 		FlushRenderingCommands();
 	}
 }
-PRAGMA_ENABLE_OPTIMIZATION
+UE_ENABLE_OPTIMIZATION
 
 void URuntimeToolsFrameworkSubsystem::SetContextActor(AToolsContextActor* ActorIn)
 {
