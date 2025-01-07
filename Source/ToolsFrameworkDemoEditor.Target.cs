@@ -8,7 +8,8 @@ public class ToolsFrameworkDemoEditorTarget : TargetRules
 	public ToolsFrameworkDemoEditorTarget( TargetInfo Target) : base(Target)
 	{
 		Type = TargetType.Editor;
-		DefaultBuildSettings = BuildSettingsVersion.V2;
-		ExtraModuleNames.AddRange( new string[] { "ToolsFrameworkDemo" } );
+		DefaultBuildSettings = BuildSettingsVersion.Latest;
+        IncludeOrderVersion = EngineIncludeOrderVersion.Latest;
+        ExtraModuleNames.AddRange( new string[] { "ToolsFrameworkDemo" } );
 	}
 }

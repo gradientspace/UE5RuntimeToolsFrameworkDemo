@@ -1,4 +1,5 @@
 #include "DynamicPMCActor.h"
+#include "MaterialDomain.h"
 #include "Materials/Material.h"
 #include "MeshComponentRuntimeUtils.h"
 #include "DynamicMesh/DynamicMesh3.h"

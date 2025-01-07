@@ -616,7 +616,7 @@ UGeneratedMesh* UGeneratedMeshPool::RequestMesh()
 {
 	if (CachedMeshes.Num() > 0)
 	{
-		return CachedMeshes.Pop(false);
+		return CachedMeshes.Pop(EAllowShrinking::No);
 	}
 	UGeneratedMesh* NewMesh = NewObject<UGeneratedMesh>();
 

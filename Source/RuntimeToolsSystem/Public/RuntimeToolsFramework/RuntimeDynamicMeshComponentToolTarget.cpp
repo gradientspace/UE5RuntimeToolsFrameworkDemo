@@ -158,7 +158,7 @@ UDynamicMeshComponent* URuntimeDynamicMeshComponentToolTarget::GetDynamicMeshCom
 
 void URuntimeDynamicMeshComponentToolTarget::CommitDynamicMeshChange(TUniquePtr<FToolCommandChange> Change, const FText& ChangeMessage)
 {
-	URuntimeToolsFrameworkSubsystem::Get()->GetTransactionsAPI()->AppendChange(Component, MoveTemp(Change),
+	URuntimeToolsFrameworkSubsystem::Get()->GetTransactionsAPI()->AppendChange(GetDynamicMeshComponent(), MoveTemp(Change),
 		LOCTEXT("UpdateMeshChange", "Update Mesh"));
 
 	InvalidateCachedMeshDescription();

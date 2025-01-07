@@ -2,6 +2,7 @@
 
 #include "RuntimeMeshSceneSubsystem.h"
 #include "GameFramework/GameModeBase.h"
+#include "MaterialDomain.h"
 #include "Materials/Material.h"
 
 #define LOCTEXT_NAMESPACE "URuntimeMeshSceneSubsystem"

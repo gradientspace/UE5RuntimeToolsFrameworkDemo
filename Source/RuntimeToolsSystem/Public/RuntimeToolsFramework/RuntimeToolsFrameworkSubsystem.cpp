@@ -18,6 +18,7 @@
 #include "ToolTargetManager.h"
 #include "RuntimeDynamicMeshComponentToolTarget.h"
 
+#include "MaterialDomain.h"
 #include "Materials/Material.h"
 
 #include "BaseGizmos/GizmoRenderingUtil.h"
@@ -170,7 +171,7 @@ public:
 		}
 	}
 
-	virtual bool RequestSelectionChange(const FSelectedOjectsChangeList& SelectionChange) override
+	virtual bool RequestSelectionChange(const FSelectedObjectsChangeList& SelectionChange) override
 	{
 		// not supported. Would need to map elements of SelectionChange to MeshSceneObjects.
 		return false;
@@ -384,7 +385,7 @@ public:
 
 
 
-PRAGMA_DISABLE_OPTIMIZATION
+//UE_DISABLE_OPTIMIZATION
 void URuntimeToolsFrameworkSubsystem::Tick(float DeltaTime)
 {
 	if (ensure(ContextActor) == false) return;
@@ -527,7 +528,7 @@ void URuntimeToolsFrameworkSubsystem::Tick(float DeltaTime)
 		FlushRenderingCommands();
 	}
 }
-PRAGMA_ENABLE_OPTIMIZATION
+//UE_ENABLE_OPTIMIZATION
 
 void URuntimeToolsFrameworkSubsystem::SetContextActor(AToolsContextActor* ActorIn)
 {

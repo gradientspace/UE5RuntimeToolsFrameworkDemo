@@ -26,6 +26,7 @@ void AToolsContextActor::BeginPlay()
 
 void AToolsContextActor::EndPlay(const EEndPlayReason::Type EndPlayReason)
 {
+	Super::EndPlay(EndPlayReason);
 }
 
 

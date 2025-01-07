@@ -6,7 +6,7 @@
 #define LOCTEXT_NAMESPACE "URuntimeEditMeshPolygonsTool"
 
 
-USingleSelectionMeshEditingTool* URuntimePolyEditToolBuilder::CreateNewTool(const FToolBuilderState& SceneState) const
+USingleTargetWithSelectionTool* URuntimePolyEditToolBuilder::CreateNewTool(const FToolBuilderState& SceneState) const
 {
 	URuntimePolyEditTool* PolyEditTool = NewObject<URuntimePolyEditTool>(SceneState.ToolManager);
 	PolyEditTool->LocalTargetWorld = SceneState.World;

@@ -4,6 +4,7 @@
 #include "Operations/MeshConvexHull.h"
 #include "ShapeApproximation/SimpleShapeSet3.h"
 #include "Physics/ComponentCollisionUtil.h"
+#include "MaterialDomain.h"
 #include "Materials/Material.h"
 
 using namespace UE::Geometry;

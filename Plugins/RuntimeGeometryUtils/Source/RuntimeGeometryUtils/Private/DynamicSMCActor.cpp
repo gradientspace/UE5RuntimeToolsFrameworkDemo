@@ -1,4 +1,5 @@
 #include "DynamicSMCActor.h"
+#include "MaterialDomain.h"
 #include "Materials/Material.h"
 #include "MeshComponentRuntimeUtils.h"
 

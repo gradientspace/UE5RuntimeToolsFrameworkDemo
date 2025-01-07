@@ -1,5 +1,5 @@
-
-#include "Engine/Classes/Kismet/BlueprintFunctionLibrary.h"
+#pragma once
+#include "Kismet/BlueprintFunctionLibrary.h"
 #include "GeneratedMesh.h"
 #include "GeneratedMeshDeformersLibrary.generated.h"
 

@@ -23,11 +23,11 @@ bool RTGUtils::ReadOBJMesh(
 	bool ret = tinyobj::LoadObj(&attrib, &shapes, &materials, &warn, &err, inputfile.c_str());
 
 	if (!warn.empty()) {
-		UE_LOG(LogTemp, Display, TEXT("%s"), warn.c_str());
+		UE_LOG(LogTemp, Display, TEXT("%hs"), warn.c_str());
 	}
 
 	if (!err.empty()) {
-		UE_LOG(LogTemp, Display, TEXT("%s"), err.c_str());
+		UE_LOG(LogTemp, Display, TEXT("%hs"), err.c_str());
 	}
 
 	if (!ret) {

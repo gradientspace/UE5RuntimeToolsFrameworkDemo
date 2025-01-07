@@ -6,6 +6,7 @@
 #include "MeshDescriptionToDynamicMesh.h"
 #include "DynamicMeshToMeshDescription.h"
 
+#include "MaterialDomain.h"
 #include "Materials/Material.h"
 
 using namespace UE::Geometry;
